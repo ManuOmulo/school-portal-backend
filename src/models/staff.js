@@ -7,12 +7,14 @@ const staffSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    uppercase: true,
   },
   employeeNo: {
     type: String,
     required: true,
     trim: true,
     unique: true,
+    uppercase: true,
   },
   department: {
     type: String,

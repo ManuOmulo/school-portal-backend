@@ -60,6 +60,22 @@ studentSchema.virtual("grades", {
 })
 
 
+// ********* model methods **********
+studentSchema.statics.findByCredentials = async (admNo, password) => {
+  const student = await StudentModel.findOne({admNo: admNo})
+  if (!student) {
+    throw new Error("Unable to Login")
+  }
+
+  const isMatch = await bcrypt.compare(password, student.password)
+  if (!isMatch) {
+    throw new Error("Unable to Login")
+  }
+
+  return student
+}
+
+
 // ************ instance methods **********
 studentSchema.methods.generateAuthToken = async function() {
   const student = this
