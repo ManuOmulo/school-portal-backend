@@ -1,17 +1,20 @@
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 
 const studentSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
+    uppercase: true,
   },
   admNo: {
     type: String,
     required: true,
     trim: true,
     unique: true,
+    uppercase: true,
   },
   school: {
     type: String,
@@ -65,6 +68,15 @@ studentSchema.methods.generateAuthToken = async function() {
   await student.save()
   return token
 }
+
+
+studentSchema.pre("save", async function(next) {
+  const student = this
+  if (student.isModified("password")) {
+    student.password = await bcrypt.hash(student.password, 10)
+  }
+  next()
+})
 
 
 const StudentModel = mongoose.model("Student", studentSchema)
