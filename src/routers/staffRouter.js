@@ -17,6 +17,16 @@ router.post("/staff/register", async (req, res) => {
   }
 })
 
+router.post("/staff/login", async (req, res) => {
+  try {
+    const staff = await Staff.findByCredentials(req.body.employeeNo, req.body.password)
+    const token = await staff.generateAuthToken()
+    res.status(200).send({ staff, token})
+  } catch {
+    res.status(400).send()
+  }
+})
+
 router.get("/staff/me", staffAuth, async (req, res) => {
   const staff = req.staff
   res.send(staff)

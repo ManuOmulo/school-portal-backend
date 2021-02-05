@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
@@ -45,6 +46,22 @@ const staffSchema = new mongoose.Schema({
 }, {
   timestamps: true
 })
+
+
+// ******** Model methods **********
+staffSchema.statics.findByCredentials = async (employeeNo, password) => {
+  const staff = await StaffModel.findOne({ employeeNo })
+  if (!staff) {
+    throw new Error("Unable to Login")
+  }
+
+  const isMatch = await bcrypt.compare(password, staff.password)
+  if (!isMatch) {
+    throw new Error("Unable to Login")
+  }
+
+  return staff
+}
 
 
 // ******** instance methods *********
